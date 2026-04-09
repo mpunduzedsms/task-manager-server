@@ -87,7 +87,7 @@ app.delete('/tasks/:id', async (req, res, next) => {
         if (!deletedTask) return res.status(404).json({ error: 'Task not found' });
         res.status(204).send();
     } catch (err) {
-        res.status(400).json({ error: 'Inavlid Task ID' });
+        res.status(400).json({ error: 'Invalid Task ID' });
     }
 });
 
