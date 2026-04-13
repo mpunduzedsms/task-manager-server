@@ -154,9 +154,9 @@ app.post('/login', async (req, res) => {
 });
 
 // --- Starting the Server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>  {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
 
 
@@ -164,7 +164,3 @@ if (process.env.NODE_ENV !== "test") {
     app.listen(PORT, () => console.log("Server running"))
 }
 
-//mongodb+srv://admin:saveit!@cluster0.ksh7ugu.mongodb.net/
-/*  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGJkNTg4ZTk2ZDc0YTZhNGRlMWVmYyIsInVzZXJuYW1lIjoibXB1bmR1IiwiaWF0IjoxNzc2MDE0ODAxLCJleHAiOjE3NzYwMTg0MDF9.phmFqkHUMrckSVFRkYEufqTvZTjBpnO3bCLE6sZ7vKg",
-    "username": "mpundu"
-} */
