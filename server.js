@@ -17,7 +17,13 @@ app.use(express.json()); // middle to parse JSON
 
 app.use(express.json());
 
+
+
 module.exports = app;
+
+app.get('/', (req, res) => {
+  res.send('🚀 Task Manager API is running...');
+});
 
 mongoose.connect("mongodb+srv://admin:saveit!@cluster0.ksh7ugu.mongodb.net/taskdb")
 .then(() => console.log("MongoDB Connected Successfully!"))
