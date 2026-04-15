@@ -15,11 +15,7 @@ const app = express();
 app.use(cors()); // Allow Angular to connect
 app.use(express.json()); // middle to parse JSON
 
-app.use(express.json());
-
-
-
-module.exports = app;
+//module.exports = app;
 
 app.get('/', (req, res) => {
   res.send('🚀 Task Manager API is running...');
