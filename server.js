@@ -143,6 +143,12 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
         // Create token
         const token = jwt.sign(
             { id: user._id, username: user.username },
@@ -164,9 +170,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>  {
     console.log(`Server running on port ${PORT}`);
 });
-
-
-if (process.env.NODE_ENV !== "test") {
-    app.listen(PORT, () => console.log("Server running"))
-}
 
