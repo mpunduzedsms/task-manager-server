@@ -56,12 +56,18 @@ app.get('/tasks/:id', async (req, res, next) => {
 app.post('/tasks', async(req, res, next) => {
     console.log("BODY:", req.body);
     try {
-        const { title, description } = req.body;
+        const { title, description, status, priority, dueDate, category } = req.body;
         if (!title || !description) {
             return res.status(400).json({ error: 'Title and description are required' });
         }
 
-        const newTask = await Task.create({ title, description });
+        const taskData = { title, description };
+        if (status) taskData.status = status;
+        if (priority) taskData.priority = priority;
+        if (dueDate) taskData.dueDate = dueDate;
+        if (category) taskData.category = category;
+
+        const newTask = await Task.create(taskData);
         res.status(201).json(newTask);
     } catch (err) {
         next(err);
@@ -71,14 +77,20 @@ app.post('/tasks', async(req, res, next) => {
 // PUT update task
 app.put('/tasks/:id', async (req, res, next) => {
     try {
-        const { title, description} = req.body;
+        const { title, description, status, priority, dueDate, category } = req.body;
         if (!title || !description) {
             return res.status(400).json({ error: 'Title and description are required' });
         }
 
+        const updateData = { title, description };
+        if (status) updateData.status = status;
+        if (priority) updateData.priority = priority;
+        if (dueDate !== undefined) updateData.dueDate = dueDate;
+        if (category) updateData.category = category;
+
         const updatedTask = await Task.findByIdAndUpdate(
             req.params.id,
-            { title, description },
+            updateData,
             { new: true } // return updated document
         );
 
