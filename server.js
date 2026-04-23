@@ -21,7 +21,9 @@ app.get('/', (req, res) => {
   res.send('🚀 Task Manager API is running...');
 });
 
-mongoose.connect("mongodb+srv://admin:saveit!@cluster0.ksh7ugu.mongodb.net/taskdb")
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://admin:saveit!@cluster0.ksh7ugu.mongodb.net/taskdb";
+
+mongoose.connect(MONGODB_URI)
 .then(() => console.log("MongoDB Connected Successfully!"))
 .catch(err => console.log("Error:", err));
 
@@ -39,9 +41,14 @@ app.get('/tasks',  async (req, res, next) => {
 });
 
 // GET single task
-app.get('/tasks', async (req, res, next) => {
-   const tasks = await Task.find();
-   res.json(tasks);
+app.get('/tasks/:id', async (req, res, next) => {
+    try {
+        const task = await Task.findById(req.params.id);
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+        res.status(200).json(task);
+    } catch (err) {
+        next(err);
+    }
 });
 
 
@@ -93,15 +100,6 @@ app.delete('/tasks/:id', async (req, res, next) => {
     }
 });
 
-// GLOBAL ERROR HANDLER
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: 'Something went wrong on the server'
-    });
-});
-
 app.post('/register', async(req, res, next) => {
     try {
        const { username, password } = req.body;
@@ -146,9 +144,10 @@ app.post('/login', async (req, res) => {
         }
 
         // Create token
+        const JWT_SECRET = process.env.JWT_SECRET || 'SECRET_KEY';
         const token = jwt.sign(
             { id: user._id, username: user.username },
-            'SECRET_KEY',
+            JWT_SECRET,
             { expiresIn: '1h'}
         );
 
@@ -159,6 +158,14 @@ app.post('/login', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// GLOBAL ERROR HANDLER
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        error: 'Something went wrong on the server'
+    });
 });
 
 // --- Starting the Server
